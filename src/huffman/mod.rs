@@ -1,9 +1,20 @@
-use core::panic;
-// A single letter will have HuffmanNode::Leaf
-// Nothing will have Option::None
-// More than 1 letter will have HuffmanNode::Internal
-//
-//
+use std::fmt;
+
+#[derive(Debug)]
+pub enum HuffmanError {
+    EncodingError(String),
+}
+
+impl fmt::Display for HuffmanError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            HuffmanError::EncodingError(msg) => write!(f, "There was an encoding error: {}", msg),
+        }
+    }
+}
+
+impl std::error::Error for HuffmanError {}
+
 use std::{
     cmp::Reverse,
     collections::{BinaryHeap, HashMap},
@@ -121,16 +132,23 @@ impl<'a> HuffmanTree<'a> {
     //    assert_eq!(c, current.ch, "Character did not match when traversing tree");
     //    Some(encoded_character)
     //}
-    pub fn get_encoded(&self) -> Option<Vec<String>> {
-        self.root.as_ref()?;
+    pub fn get_encoded(&self) -> Result<String, HuffmanError> {
+        if self.root.is_none() && self.contents.is_empty() {
+            return Ok(String::new());
+        }
 
-        let mut encode_string = Vec::new();
+        let mut encode_string = String::new();
         for c in self.contents.chars() {
             match self.code_map.get(&c) {
-                Some(path) => encode_string.push(path.clone()),
-                None => panic!("Didn't exist?!? Why"),
+                Some(path) => encode_string += path,
+                None => {
+                    return Err(HuffmanError::EncodingError(format!(
+                        "There was no {} found in encoding map",
+                        c
+                    )));
+                }
             }
         }
-        Some(encode_string)
+        Ok(encode_string)
     }
 }
