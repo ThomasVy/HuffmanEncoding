@@ -17,14 +17,12 @@ fn write_encoded_to_file(file_name: &str, encoded_content: &str) -> Result<(), i
 fn main() {
     //const FILE_NAME: &str = "bee20script.txt";
     //let contents = read_file(FILE_NAME).expect("File wasn't read");
+    //const OUTPUT_FILENAME: &str = "output.txt";
     let contents = "EEEEAABBCCEEEEEEEEECD1234sadfthomasaE";
-    const OUTPUT_FILENAME: &str = "output.txt";
 
-    let huffman_tree = huffman::HuffmanTree::new(&contents);
-    let encoded_content = huffman_tree.get_encoded().expect("Error encoding failed");
+    let huffman_tree = huffman::HuffmanTree::new(contents);
+    let encoded_content = huffman_tree
+        .get_encoded(contents)
+        .expect("Error encoding failed");
     println!("Success encode: {}", encoded_content);
-    match write_encoded_to_file(OUTPUT_FILENAME, &encoded_content) {
-        Ok(_) => println!("Success writing to {OUTPUT_FILENAME}"),
-        Err(_) => println!("Failed to write to {OUTPUT_FILENAME}"),
-    }
 }

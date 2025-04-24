@@ -20,10 +20,9 @@ use std::{
     collections::{BinaryHeap, HashMap},
 };
 
-pub struct HuffmanTree<'a> {
+pub struct HuffmanTree {
     root: Option<Box<HuffmanNode>>,
     code_map: HashMap<char, String>,
-    contents: &'a str,
 }
 
 // Ordering for BinaryHeap
@@ -91,8 +90,8 @@ fn build_code_map(head: &HuffmanNode, path: String, code_map: &mut HashMap<char,
     }
 }
 
-impl<'a> HuffmanTree<'a> {
-    pub fn new(contents: &'a str) -> Self {
+impl HuffmanTree {
+    pub fn new(contents: &str) -> Self {
         let mut frequency_map = get_frequency_map(contents);
         while frequency_map.len() > 1 {
             // 2 or more in the frequency_map
@@ -115,30 +114,19 @@ impl<'a> HuffmanTree<'a> {
         }
         Self {
             root: frequency_map.pop().map(|Reverse(head)| Box::new(head)),
-            contents,
             code_map,
         }
     }
 
-    //pub fn serialize_map(&self) -> Vec<char> {
-    //
-    //}
-    //pub fn get_encoded_char(&self, c: char) -> Option<String> {
-    //    self.root.as_ref()?;
-    //    let mut encoded_character = String::new();
-    //
-    //
-    //
-    //    assert_eq!(c, current.ch, "Character did not match when traversing tree");
-    //    Some(encoded_character)
-    //}
-    pub fn get_encoded(&self) -> Result<String, HuffmanError> {
-        if self.root.is_none() && self.contents.is_empty() {
+    pub fn serialize_map(&self) -> HashMap<char, String> {}
+
+    pub fn get_encoded(&self, to_be_encoded: &str) -> Result<String, HuffmanError> {
+        if self.root.is_none() && to_be_encoded.is_empty() {
             return Ok(String::new());
         }
 
         let mut encode_string = String::new();
-        for c in self.contents.chars() {
+        for c in to_be_encoded.chars() {
             match self.code_map.get(&c) {
                 Some(path) => encode_string += path,
                 None => {
