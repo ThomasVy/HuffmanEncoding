@@ -122,16 +122,18 @@ impl HuffmanTree {
     fn from_serialized(serialized_tree: &VecDeque<char>) -> Self {
         let mut root = None;
         let mut current = None;
-        for c in serialized_tree {
-            if c == '0' { 
-                let node = HuffmanNode::Internal { freq: (), left: (), right: () }
-
-                
-            } else if c == '1' {
-                let node = HuffmanNode::Leaf { freq: (), ch: () }
+        let mut tree = Self {
+            root: None,
+            code_map: HashMap::new(),
+        };
+        for i in 0..serialized_tree.len() {
+            i += 1;
+            if (serialized_tree[i] == '0') {
+                //HuffmanNode::Internal
+            } else if (serialized_tree[i] == '1') {
+                //HuffmanNode::Leaf - the next one in array is the char
             }
         }
-        
     }
 
     fn serialize_node(node: &HuffmanNode, output: &mut VecDeque<char>) {
@@ -167,6 +169,8 @@ impl HuffmanTree {
     //  / \   / \
     // A   B C   D
     // output: 001A1B01C1D
+    // The return value is VecDeque of chars because actually turning to
+    // stream of bits is a bit more difficult
     pub fn serialize_table(&self) -> Option<VecDeque<char>> {
         self.root.as_ref().map(|root| {
             let mut serialized_huffman = VecDeque::new();
