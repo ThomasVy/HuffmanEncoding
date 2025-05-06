@@ -4,15 +4,15 @@ use std::fs::File;
 use std::io;
 use std::io::Write;
 
-fn read_file(file_name: &str) -> Result<String, io::Error> {
-    //Read the whole file to a string
-    fs::read_to_string(file_name)
-}
-fn write_encoded_to_file(file_name: &str, encoded_content: &str) -> Result<(), io::Error> {
-    let mut file = File::create(file_name)?;
-    file.write_all(encoded_content.as_bytes())?;
-    Ok(())
-}
+// fn read_file(file_name: &str) -> Result<String, io::Error> {
+//     //Read the whole file to a string
+//     fs::read_to_string(file_name)
+// }
+// fn write_encoded_to_file(file_name: &str, encoded_content: &str) -> Result<(), io::Error> {
+//     let mut file = File::create(file_name)?;
+//     file.write_all(encoded_content.as_bytes())?;
+//     Ok(())
+// }
 
 fn main() {
     //const FILE_NAME: &str = "bee20script.txt";

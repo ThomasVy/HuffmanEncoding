@@ -1,3 +1,4 @@
+use std::collections::VecDeque;
 use std::fmt;
 
 #[derive(Debug)]
@@ -118,7 +119,61 @@ impl HuffmanTree {
         }
     }
 
-    pub fn serialize_map(&self) -> HashMap<char, String> {}
+    fn from_serialized(serialized_tree: &VecDeque<char>) -> Self {
+        let mut root = None;
+        let mut current = None;
+        for c in serialized_tree {
+            if c == '0' { 
+                let node = HuffmanNode::Internal { freq: (), left: (), right: () }
+
+                
+            } else if c == '1' {
+                let node = HuffmanNode::Leaf { freq: (), ch: () }
+            }
+        }
+        
+    }
+
+    fn serialize_node(node: &HuffmanNode, output: &mut VecDeque<char>) {
+        match node {
+            HuffmanNode::Leaf { freq: _, ch } => {
+                output.push_back('1');
+                output.push_back(*ch);
+            }
+            HuffmanNode::Internal {
+                freq: _,
+                left,
+                right,
+            } => {
+                output.push_back('0');
+                HuffmanTree::serialize_node(left, output);
+                HuffmanTree::serialize_node(right, output);
+            }
+        }
+    }
+    // We will ditch the frequencies
+    // Preorder DFS where parent -> left -> right
+    // 0 for internal node
+    // 1 + character for leaf node
+    //     *
+    //    / \
+    //   *   C
+    //  / \
+    // A   B
+    // output: 001A1B1C
+    //      *
+    //    /   \
+    //   *     *
+    //  / \   / \
+    // A   B C   D
+    // output: 001A1B01C1D
+    pub fn serialize_table(&self) -> Option<VecDeque<char>> {
+        self.root.as_ref().map(|root| {
+            let mut serialized_huffman = VecDeque::new();
+            HuffmanTree::serialize_node(root, &mut serialized_huffman);
+            serialized_huffman
+        })
+    }
 
     pub fn get_encoded(&self, to_be_encoded: &str) -> Result<String, HuffmanError> {
         if self.root.is_none() && to_be_encoded.is_empty() {
@@ -138,5 +193,18 @@ impl HuffmanTree {
             }
         }
         Ok(encode_string)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_serialize() {
+        let contents = "AAAAABBBBCCD";
+        let huffman_tree = HuffmanTree::new(contents);
+        let expected_serialized = "01A001D1C1B".chars().collect();
+        assert_eq!(huffman_tree.serialize_table(), Some(expected_serialized));
     }
 }
